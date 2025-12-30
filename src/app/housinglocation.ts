@@ -1,3 +1,5 @@
+// CET INTERFACE DEVRAIT ÊTRE DANS UN DOSSIER NOMMÉ "Models"
+
 export interface HousingLocationInfo  {
     id: number;
     name: string;
