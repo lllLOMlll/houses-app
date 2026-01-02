@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, inject } from "@angular/core";
 import { HousingLocation } from "../housing-location/housing-location";
 import { HousingLocationInfo } from "../housinglocation";
 import { HousingService } from "../housing.service";
@@ -32,13 +32,20 @@ import { HousingService } from "../housing.service";
   styleUrls: ["./home.css"],
 })
 export class Home {
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   housingLocationList: HousingLocationInfo[] = [];
   housingService: HousingService = inject(HousingService);
   filteredLocationList: HousingLocationInfo[] = [];
 
-  constructor() {
-    this.housingLocationList = this.housingService.getAllHousingLocations();
-    this.filteredLocationList = this.housingLocationList;
+//Because we didn't use signals for our state, you have to notify Angular that a change happened that requires a synchronization. Call this.changeDetectorRef.markForCheck() to do this.
+ constructor() {
+    this.housingService
+      .getAllHousingLocations()
+      .then((housingLocationList: HousingLocationInfo[]) => {
+        this.housingLocationList = housingLocationList;
+        this.filteredLocationList = housingLocationList;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   filterResults(text: string) {
